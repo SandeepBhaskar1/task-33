@@ -9,13 +9,18 @@ const PORT = process.env.PORT;
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(cors({
-    origin: 'https://task-33-frontend.vercel.app',
-    credentials: true
-}));
+const corsOptions = {
+  origin: 'https://task-33-frontend.vercel.app', 
+  credentials: true,  
+  methods: ['GET', 'POST', 'OPTIONS'],  
+  allowedHeaders: ['Content-Type', 'Authorization'],  
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); 
 
 app.post('/cookie/set', (req, res) => {
-    const {name, value} =req.body;
+    const { name, value } = req.body;
 
     if (!name || !value) {
         return res.status(400).json({
@@ -28,20 +33,20 @@ app.post('/cookie/set', (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'none',
-        maxAge: 24*60*60*1000
+        maxAge: 24 * 60 * 60 * 1000
     });
 
     res.status(201).json({
         status: 'Success',
         message: 'Cookie set successfully!'
-    })
+    });
 });
 
-app.get('/cookie/get/:name', (req,res) => {
-    const {name} = req.params;
+app.get('/cookie/get/:name', (req, res) => {
+    const { name } = req.params;
     const cookieValue = req.cookies[name];
 
-    if (!cookieValue){
+    if (!cookieValue) {
         return res.status(404).json({
             status: 'Error',
             message: `Cookie ${name} not found.`
@@ -57,40 +62,40 @@ app.get('/cookie/get/:name', (req,res) => {
     });
 });
 
-app.post('/demo/status', (req,res)=> {
-    const {statusCode} = req.body;
+app.post('/demo/status', (req, res) => {
+    const { statusCode } = req.body;
 
-    switch (statusCode){
+    switch (statusCode) {
         case 200:
             return res.status(200).json({
                 status: 'Success',
                 message: 'OK - request successful.'
             });
-            case 201: 
+        case 201:
             return res.status(201).json({
                 status: 'Success',
                 message: 'Created - Resource created successfully'
             });
-            case 400:
-                return res.status(400).json({
-                    staus: 'Error',
-                    message: 'Bad Request - invalid input'
-                });
-                case 404: 
-                return res.status(404).json({
-                    status: 'Error',
-                    message: 'Not found - resource not found'
-                });
-                case 500:
-                    res.status(500).json({
-                        status: 'Error',
-                        message: 'Internal server error'
-                    });
-                    default:
-                        return res.status(400).json({
-                            status: 'Error',
-                            message: 'Invalid status code provided.'
-                        });
+        case 400:
+            return res.status(400).json({
+                status: 'Error',
+                message: 'Bad Request - invalid input'
+            });
+        case 404:
+            return res.status(404).json({
+                status: 'Error',
+                message: 'Not found - resource not found'
+            });
+        case 500:
+            return res.status(500).json({
+                status: 'Error',
+                message: 'Internal server error'
+            });
+        default:
+            return res.status(400).json({
+                status: 'Error',
+                message: 'Invalid status code provided.'
+            });
     }
 });
 
@@ -101,6 +106,6 @@ app.get('/test-cookies', (req, res) => {
     });
 });
 
-app.listen(PORT, ()=> {
+app.listen(PORT, () => {
     console.log(`Server is listening on http://localhost:${PORT}`);
-})
+});
