@@ -10,7 +10,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(cors({
-    origin: process.env.FRONTEND_CLOUD_URL,
+    origin: 'https://task-33-frontend.vercel.app',
     credentials: true
 }));
 
