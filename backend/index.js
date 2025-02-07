@@ -13,8 +13,6 @@ app.use(cors({
     origin: process.env.FRONTEND_LOCAL_URL || process.env.FRONTEND_CLOUD_URL,
     credentials: true
 }));
-console.log(process.env.FRONTEND_LOCAL_URL);
-
 
 app.post('/cookie/set', (req, res) => {
     const {name, value} =req.body;
@@ -28,7 +26,7 @@ app.post('/cookie/set', (req, res) => {
 
     res.cookie(name, value, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'development',
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'none',
         maxAge: 24*60*60*1000
     });
